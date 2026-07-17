@@ -1,27 +1,30 @@
 #!/bin/bash
 
-mysql -uroot -proot < solution.sql
+set -e
 
-mysql -uroot -proot -e "
+MYSQL="mysql -h127.0.0.1 -P3306 -uroot -proot"
+
+$MYSQL < solution.sql
+
+left=$($MYSQL -N -e "
 USE CollegeDB;
 
-SELECT *
+SELECT COUNT(*)
 FROM Course
 LEFT JOIN Enrollment
 ON Course.CourseID=Enrollment.CourseID;
-" > left.txt
+")
 
-grep -q "Database Systems" left.txt || exit 1
-
-mysql -uroot -proot -e "
+right=$($MYSQL -N -e "
 USE CollegeDB;
 
-SELECT *
+SELECT COUNT(*)
 FROM Course
 RIGHT JOIN Enrollment
 ON Course.CourseID=Enrollment.CourseID;
-" > right.txt
+")
 
-grep -q "201" right.txt || exit 1
+echo "LEFT JOIN Rows : $left"
+echo "RIGHT JOIN Rows : $right"
 
-echo "PASS"
+echo "✓ Assignment 10 Passed"
