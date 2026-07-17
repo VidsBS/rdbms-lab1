@@ -1,13 +1,17 @@
 #!/bin/bash
 
-mysql -uroot -proot < solution.sql
+set -e
 
-mysql -uroot -proot -e "
+MYSQL="mysql -h127.0.0.1 -P3306 -uroot -proot"
+
+$MYSQL < solution.sql
+
+$MYSQL -e "
 USE CollegeDB;
 DESCRIBE Student;
 " > output.txt
 
-grep -q "Email" output.txt || exit 1
-grep -q "PhoneNumber" output.txt || exit 1
+grep -q Email output.txt
+grep -q PhoneNumber output.txt
 
-echo "PASS"
+echo "✓ Assignment 3 Passed"
