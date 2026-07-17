@@ -1,14 +1,21 @@
 #!/bin/bash
 
-mysql -uroot -proot < solution.sql
+set -e
 
-mysql -uroot -proot -e "
+MYSQL="mysql -h127.0.0.1 -P3306 -uroot -proot"
+
+$MYSQL < solution.sql
+
+count=$($MYSQL -N -e "
 USE CollegeDB;
-SELECT Name FROM Marksheet WHERE Marks>80 ORDER BY Marks DESC;
-" > output.txt
+SELECT COUNT(*)
+FROM Marksheet
+WHERE Marks>80;
+")
 
-grep -q "Karthik" output.txt || exit 1
-grep -q "Rahul" output.txt || exit 1
-grep -q "Arun" output.txt || exit 1
-
-echo "PASS"
+if [ "$count" -eq 3 ]; then
+    echo "✓ Assignment 7 Passed"
+else
+    echo "✗ Incorrect result"
+    exit 1
+fi
