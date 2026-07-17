@@ -1,20 +1,18 @@
 #!/bin/bash
 
-set -ex
+set -e
 
-echo "Running solution.sql"
+MYSQL="mysql -h127.0.0.1 -P3306 -uroot -proot"
 
-mysql -h127.0.0.1 -P3306 -uroot -proot < solution.sql
+$MYSQL < solution.sql
 
-echo "Showing databases"
-
-mysql -h127.0.0.1 -P3306 -uroot -proot -e "SHOW DATABASES;"
-
-echo "Using CollegeDB"
-
-mysql -h127.0.0.1 -P3306 -uroot -proot -e "
+$MYSQL -e "
 USE CollegeDB;
-SHOW TABLES;
-"
+DESCRIBE Department;
+" > output.txt
 
-echo "PASS"
+grep -q DepartmentID output.txt
+grep -q DepartmentName output.txt
+grep -q HOD output.txt
+
+echo "✓ Assignment 1 Passed"
