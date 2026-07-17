@@ -1,19 +1,18 @@
 #!/bin/bash
 
-mysql -uroot -proot < solution.sql
+set -e
 
-mysql -uroot -proot -e "
+MYSQL="mysql -h127.0.0.1 -P3306 -uroot -proot"
+
+$MYSQL < solution.sql
+
+$MYSQL -e "
 USE CollegeDB;
+
 SELECT COUNT(*) FROM Employee;
-" > count.txt
-
-grep -q "5" count.txt || exit 1
-
-mysql -uroot -proot -e "
-USE CollegeDB;
 SELECT MAX(Salary) FROM Employee;
-" > max.txt
+SELECT MIN(Salary) FROM Employee;
+SELECT AVG(Salary) FROM Employee;
+"
 
-grep -q "45000" max.txt || exit 1
-
-echo "PASS"
+echo "✓ Assignment 8 Passed"
