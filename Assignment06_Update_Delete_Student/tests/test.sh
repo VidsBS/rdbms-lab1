@@ -1,21 +1,33 @@
 #!/bin/bash
 
-mysql -uroot -proot < solution.sql
+set -e
 
-mysql -uroot -proot -e "
+MYSQL="mysql -h127.0.0.1 -P3306 -uroot -proot"
+
+$MYSQL < solution.sql
+
+dept=$($MYSQL -N -e "
 USE CollegeDB;
-SELECT DepartmentID FROM Student WHERE StudentName='Karthik';
-" > output.txt
+SELECT DepartmentID
+FROM Student
+WHERE StudentName='Karthik';
+")
 
-grep -q "103" output.txt || exit 1
-
-mysql -uroot -proot -e "
-USE CollegeDB;
-SELECT * FROM Student WHERE StudentID=1002;
-" > delete.txt
-
-if grep -q "1002" delete.txt; then
+if [ "$dept" != "103" ]; then
+    echo "✗ Update failed"
     exit 1
 fi
 
-echo "PASS"
+count=$($MYSQL -N -e "
+USE CollegeDB;
+SELECT COUNT(*)
+FROM Student
+WHERE StudentID=1002;
+")
+
+if [ "$count" != "0" ]; then
+    echo "✗ Delete failed"
+    exit 1
+fi
+
+echo "✓ Assignment 6 Passed"
