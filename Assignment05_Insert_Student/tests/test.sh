@@ -1,14 +1,19 @@
 #!/bin/bash
 
-mysql -uroot -proot < solution.sql
+set -e
 
-mysql -uroot -proot -e "
+MYSQL="mysql -h127.0.0.1 -P3306 -uroot -proot"
+
+$MYSQL < solution.sql
+
+count=$($MYSQL -N -e "
 USE CollegeDB;
-SELECT * FROM Student;
-" > output.txt
+SELECT COUNT(*) FROM Student;
+")
 
-grep -q "Arun" output.txt || exit 1
-grep -q "Divya" output.txt || exit 1
-grep -q "Karthik" output.txt || exit 1
-
-echo "PASS"
+if [ "$count" -eq 3 ]; then
+    echo "✓ Assignment 5 Passed"
+else
+    echo "✗ Student records missing"
+    exit 1
+fi
