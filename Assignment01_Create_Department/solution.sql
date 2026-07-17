@@ -5,4 +5,4 @@ create database CollegeDB;
 -- Use Database
 use CollegeDB;
 -- Create Department Table
-create Table Department(department_id int primary key, department_name varchar(10), hod varchar(10));
+create Table Department(DepartmentID int primary key, DepartmentName varchar(10), HOD varchar(10));
